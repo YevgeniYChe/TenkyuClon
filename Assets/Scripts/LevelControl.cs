@@ -16,7 +16,7 @@ public class LevelControl : MonoBehaviour
     // for touchscreen
     public float speedX;
     public float speedZ;
-    public float multiSpeed=3f;
+    public float multiSpeed;
 
     public GameObject playerBall;
     private Vector3 playerBallPosition;
@@ -84,8 +84,6 @@ public class LevelControl : MonoBehaviour
     {
         playerBallPosition = playerBall.transform.position;
 
-        //touchC = Input.touchCount;
-
         float tiltAroundZ = 0;
         float tiltAroundX = 0;
         speedZ = 0;
@@ -93,7 +91,7 @@ public class LevelControl : MonoBehaviour
 
         if (Input.touchCount > 0)
         {
-            //Store the first touch detected.
+
             Touch myTouch = Input.touches[0];
 
             speedZ = myTouch.deltaPosition.normalized.x;
@@ -163,12 +161,75 @@ public class LevelControl : MonoBehaviour
             transform.RotateAround(playerBallPosition, new Vector3(0, 1, 0), 360 - angleY);
     }
 
-    void Update()
+    // for mobile phone. Players build.
+    void altRotate4()
+    {
+        playerBallPosition = playerBall.transform.position;
+
+        bool rotateRight    = false;
+        bool rotateLeft     = false;
+        bool rotateUp       = false;
+        bool rotateDown     = false;
+
+        speedZ = 0;
+        speedX = 0;
+
+        Vector3 pointDirectionXUp = new Vector3(1, 0, 0);
+        Vector3 pointDirectionZRight = new Vector3(0, 0, -1);
+
+        if (Input.touchCount > 0)
+        {
+
+            Touch myTouch = Input.touches[0];
+
+            speedZ = myTouch.deltaPosition.normalized.x;
+            speedX = myTouch.deltaPosition.normalized.y;
+
+            if (speedZ > 0)
+                rotateRight = true;
+            else if (speedZ < 0)
+                rotateLeft = true;
+
+            if (speedX > 0)
+                rotateUp = true;
+            else if (speedX < 0)
+                rotateDown = true;
+
+            speedZ = myTouch.deltaPosition.x * multiSpeed * Time.deltaTime;
+            speedX = myTouch.deltaPosition.y * multiSpeed * Time.deltaTime;
+
+        }
+
+        angleX = transform.rotation.eulerAngles.x;
+        angleZ = transform.rotation.eulerAngles.z;
+        angleY = transform.rotation.eulerAngles.y;
+
+        // Rotation limit
+        if (((angleX > 180) || (angleX < maxTiltAngle)) && rotateUp)                // Up
+            transform.RotateAround(playerBallPosition, pointDirectionXUp, speedX);
+        else if (((angleX < 180) || (angleX > 360 - maxTiltAngle)) && rotateDown)   // Down
+            transform.RotateAround(playerBallPosition, pointDirectionXUp, speedX);
+        if (((angleZ < 180) || (angleZ > 360 - maxTiltAngle)) && rotateRight)       // Right
+            transform.RotateAround(playerBallPosition, pointDirectionZRight, speedZ);
+        else if (((angleZ > 180) || (angleZ < maxTiltAngle)) && rotateLeft)         // Left
+            transform.RotateAround(playerBallPosition, pointDirectionZRight, speedZ);
+
+        // Option for smooth controll. LOCK Y
+        if ((angleY > 0) && (angleY < 180))
+            transform.RotateAround(playerBallPosition, new Vector3(0, 1, 0), -angleY);
+        else if (angleY > 180)
+            transform.RotateAround(playerBallPosition, new Vector3(0, 1, 0), 360 - angleY);
+    }
+
+    void FixedUpdate()
     {
         // Section for keyboard
-        altRotate2();
+        // altRotate2();
 
         // Section for touchscreen
-        altRotate3();
+        //altRotate3();
+
+        // Section for 
+        altRotate4();
     }
 }

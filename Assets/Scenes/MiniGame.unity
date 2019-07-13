@@ -928,7 +928,7 @@ MonoBehaviour:
   speed: 1
   speedX: 0
   speedZ: 0
-  multiSpeed: 1.5
+  multiSpeed: 3
   playerBall: {fileID: 471051798}
 --- !u!1 &986360340
 GameObject:
