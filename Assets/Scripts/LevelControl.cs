@@ -166,7 +166,7 @@ public class LevelControl : MonoBehaviour
     void Update()
     {
         // Section for keyboard
-        //altRotate2();
+        altRotate2();
 
         // Section for touchscreen
         altRotate3();
